@@ -5,7 +5,7 @@ HEADER	= procedures/optimizedirection.h procedures/optimizemixedinteger.h proced
 OUT	= OptiECRS
 CC	 = g++
 C	 = gcc
-FLAGS	 = -c -Wall -I/Library/gurobi903/mac64/include -O3
+FLAGS	 = -c -Wall -O3
 GUROBIINC = -I/Library/gurobi903/mac64/include
 GUROBILIB = -L/Library/gurobi903/mac64/lib
 LFLAGS	 = 
@@ -14,7 +14,7 @@ all: $(OBJS)
 	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS) $(GUROBIINC) $(GUROBILIB) -lgurobi90 -lgurobi_c++
 
 optimizemixedinteger.o: procedures/optimizemixedinteger.cpp
-	$(CC) $(FLAGS) $(GUROBIINC) $(GUROBILIB) procedures/optimizemixedinteger.cpp -std=c++17
+	$(CC) $(FLAGS) $(GUROBIINC) procedures/optimizemixedinteger.cpp -std=c++17
 
 optimizebranchandbound.o: procedures/optimizebranchandbound.cpp
 	$(CC) $(FLAGS) procedures/optimizebranchandbound.cpp -std=c++17
@@ -32,7 +32,7 @@ optimizedirectionalcost.o: procedures/optimizedirectionalcost.cpp
 	$(CC) $(FLAGS) procedures/optimizedirectionalcost.cpp -std=c++17
 
 optimizemixedintegeralt.o: procedures/optimizemixedintegeralt.cpp
-	$(CC) $(FLAGS) $(GUROBIINC) $(GUROBILIB) procedures/optimizemixedintegeralt.cpp -std=c++17
+	$(CC) $(FLAGS) $(GUROBIINC) procedures/optimizemixedintegeralt.cpp -std=c++17
 
 galois_d.o: galois/galois.cpp
 	$(CC) $(FLAGS) galois/galois.cpp -std=c++17 -o galois_d.o
@@ -96,8 +96,9 @@ extendedcauchymatrix.o: matrix/extendedcauchymatrix.cpp
 	$(CC) $(FLAGS) matrix/extendedcauchymatrix.cpp -std=c++17
 
 main.o: main.cpp
-	$(CC) $(FLAGS) main.cpp -std=c++17
+	$(CC) $(FLAGS) $(GUROBIINC) main.cpp -std=c++17
 
 
 clean:
 	rm -f $(OBJS) $(OUT)
+	rm -f $(OUT)

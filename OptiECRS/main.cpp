@@ -13,7 +13,6 @@
 #include "procedures/optimizebranchandbound.h"
 #include "procedures/optimizemixedinteger.h"
 #include "procedures/optimizemixedintegeralt.h"
-#include "gurobi_c++.h"
 
 Galois getGFFromUser() {
   unsigned int w;
