@@ -1,2 +1,4 @@
 *.o
 *xcode*
+OptiECRS
+../*xcode*/
