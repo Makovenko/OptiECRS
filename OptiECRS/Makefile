@@ -8,10 +8,11 @@ C	 = gcc
 FLAGS	 = -c -Wall -O3
 GUROBIINC = -I/Library/gurobi903/mac64/include
 GUROBILIB = -L/Library/gurobi903/mac64/lib
+GUROBICAL = -lgurobi90 -lgurobi_c++
 LFLAGS	 = 
 
 all: $(OBJS)
-	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS) $(GUROBIINC) $(GUROBILIB) -lgurobi90 -lgurobi_c++
+	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS) $(GUROBIINC) $(GUROBILIB) $(GUROBICAL)
 
 optimizemixedinteger.o: procedures/optimizemixedinteger.cpp
 	$(CC) $(FLAGS) $(GUROBIINC) procedures/optimizemixedinteger.cpp -std=c++17
