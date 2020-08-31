@@ -23,33 +23,33 @@ void OptimizeBranchAndBound::recursiveCall(const ExtendedCauchyMatrix::Generator
     std::priority_queue<WeightedElement, std::vector<WeightedElement>, std::greater<WeightedElement>> candidates;
     unsigned int maxEl = m_currentRow.size() == 1?2:m_current.getGF().getMax();
 
-//    //for (unsigned int el = next.first + 1; el < maxEl; ++el) {
-//    for (unsigned int el = 1; el < maxEl; ++el) {
-//      if (m_used[el]) continue;
-//      for (unsigned int mul = 1; mul < m_current.getGF().getMax(); ++mul) {
-//        auto element = ExtendedCauchyMatrix::GeneratorElement(el, mul);
-//        auto cost = m_directionOptimizer.getExtensionCost(element);
-//        //if (cost + colsLeft*m_current.getGF().getW()*m_current.getRows() < m_current.getBitmatrixWeight()) {
-//        if (cost * m_current.getCols()/static_cast<double>(m_current.getCols()-colsLeft) < m_current.getBitmatrixWeight()) {
-//          candidates.push(WeightedElement(cost, element));
-//        }
-//      }
-//    }
-
     //for (unsigned int el = next.first + 1; el < maxEl; ++el) {
     for (unsigned int el = 1; el < maxEl; ++el) {
       if (m_used[el]) continue;
-      auto best = WeightedElement(std::numeric_limits<unsigned int>:: max(), {0, 0});
       for (unsigned int mul = 1; mul < m_current.getGF().getMax(); ++mul) {
-        if (shouldTerminate()) return;
         auto element = ExtendedCauchyMatrix::GeneratorElement(el, mul);
         auto cost = m_directionOptimizer.getExtensionCost(element);
-        //if (cost + colsLeft*m_current.getGF().getW()*m_current.getRows() < m_current.getBitmatrixWeight())
-        if (cost * m_current.getCols()/static_cast<double>(m_current.getCols()-colsLeft) < m_current.getBitmatrixWeight())
-          best = std::min(best, {cost, element});
+        //if (cost + colsLeft*m_current.getGF().getW()*m_current.getRows() < m_current.getBitmatrixWeight()) {
+        if (cost * m_current.getCols()/static_cast<double>(m_current.getCols()-colsLeft) < m_current.getBitmatrixWeight()) {
+          candidates.push(WeightedElement(cost, element));
+        }
       }
-      candidates.push(best);
     }
+
+//    //for (unsigned int el = next.first + 1; el < maxEl; ++el) {
+//    for (unsigned int el = 1; el < maxEl; ++el) {
+//      if (m_used[el]) continue;
+//      auto best = WeightedElement(std::numeric_limits<unsigned int>:: max(), {0, 0});
+//      for (unsigned int mul = 1; mul < m_current.getGF().getMax(); ++mul) {
+//        if (shouldTerminate()) return;
+//        auto element = ExtendedCauchyMatrix::GeneratorElement(el, mul);
+//        auto cost = m_directionOptimizer.getExtensionCost(element);
+//        //if (cost + colsLeft*m_current.getGF().getW()*m_current.getRows() < m_current.getBitmatrixWeight())
+//        if (cost * m_current.getCols()/static_cast<double>(m_current.getCols()-colsLeft) < m_current.getBitmatrixWeight())
+//          best = std::min(best, {cost, element});
+//      }
+//      candidates.push(best);
+//    }
 
     while (!candidates.empty()) {
       auto candidate = candidates.top(); candidates.pop();
