@@ -28,25 +28,25 @@ std::priority_queue<
       valuesGiven  = 0;
   }
 
-  std::vector<bool> used(matrix.getGF().getMax(), false);
+  std::vector<bool> used(matrix.getGF()->getMax(), false);
   for (auto& el: given) used[el.first] = true;
   std::priority_queue<std::pair<unsigned int, ExtendedCauchyMatrix::GeneratorElement>> queue;
   std::vector<unsigned int> precalc(valuesGiven, 0);
 
-  for (unsigned int el = 0; el < matrix.getGF().getMax(); ++el) {
+  for (unsigned int el = 0; el < matrix.getGF()->getMax(); ++el) {
     if (used[el]) continue;
 
     for (unsigned int i = 0; i < valuesGiven; ++i)
-      precalc[i] = matrix.getGF().divide(
-        given[i].second, matrix.getGF().sum(given[i].first, el)
+      precalc[i] = matrix.getGF()->divide(
+        given[i].second, matrix.getGF()->sum(given[i].first, el)
       );
 
     std::pair<unsigned int, unsigned int> best(std::numeric_limits<unsigned int>::max(), 0);
-    for (unsigned int mul = 1; mul < matrix.getGF().getMax(); ++mul) {
+    for (unsigned int mul = 1; mul < matrix.getGF()->getMax(); ++mul) {
       unsigned int cost = 0;
       for (unsigned int i = 0; i < valuesGiven; ++i) {
-        cost += matrix.getGF().bitmatrixOnes(
-          matrix.getGF().product(mul, precalc[i])
+        cost += matrix.getGF()->bitmatrixOnes(
+          matrix.getGF()->product(mul, precalc[i])
         );
       }
       best = min(best, {cost, mul});

@@ -7,15 +7,18 @@
 
 class OptimizeMixedIntegerAlt
 {
-  const Galois m_GF;
+  const std::shared_ptr<Galois> m_GF;
   GRBEnv m_grbEnv;
   GRBModel m_grbModel;
   std::vector<GRBVar> m_X, m_Y, m_C, m_D, m_U;
   unsigned int m_cols, m_rows;
   
-  inline unsigned int indexToFirst(const unsigned int index) const { return index % m_GF.getMax(); }
-  inline unsigned int indexToSecond(const unsigned int index) const { return index / m_GF.getMax(); }
-  inline unsigned int pairToIndex(const unsigned int first, const unsigned int second) { return second*m_GF.getMax() + first; }
+  inline unsigned int tripletToIndexX(const unsigned int first, const unsigned int second, const unsigned int third) {
+    return (m_GF->getMax()*first + second)*m_cols + third; }
+  inline unsigned int tripletToIndexY(const unsigned int first, const unsigned int second, const unsigned int third) {
+  return (m_GF->getMax()*first + second)*m_rows + third; }
+  inline unsigned int tripletToIndexCUD(const unsigned int first, const unsigned int second, const unsigned int third) {
+  return (m_cols*first + second)*m_rows + third; }
 
   void initializeVariables(const ExtendedCauchyMatrix& given);
   void initializeConstraints(const ExtendedCauchyMatrix& given);

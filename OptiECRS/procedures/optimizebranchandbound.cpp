@@ -15,18 +15,21 @@ void OptimizeBranchAndBound::recursiveCall(const ExtendedCauchyMatrix::Generator
       OptimizeDirection::Direction::Vertical
     );
     std::cerr<<"OptimizeBranchAndBound: found a new solution with cost "<<m_current.getBitmatrixWeight()<<std::endl;
+    auto time = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::high_resolution_clock::now() - m_started).count();
+    std::cerr<<"Time since start: "<<time<<" seconds."<<std::endl;
     std::cerr<<m_current<<std::endl;
   }
   else {
     unsigned int colsLeft = m_current.getCols() - static_cast<unsigned int>(m_currentRow.size()) - 1;
     using WeightedElement = std::pair<unsigned int, ExtendedCauchyMatrix::GeneratorElement>;
     std::priority_queue<WeightedElement, std::vector<WeightedElement>, std::greater<WeightedElement>> candidates;
-    unsigned int maxEl = m_currentRow.size() == 1?2:m_current.getGF().getMax();
+    unsigned int maxEl = m_currentRow.size() == 1?2:m_current.getGF()->getMax();
 
     //for (unsigned int el = next.first + 1; el < maxEl; ++el) {
     for (unsigned int el = 1; el < maxEl; ++el) {
       if (m_used[el]) continue;
-      for (unsigned int mul = 1; mul < m_current.getGF().getMax(); ++mul) {
+      for (unsigned int mul = 1; mul < m_current.getGF()->getMax(); ++mul) {
+        if (shouldTerminate()) return;
         auto element = ExtendedCauchyMatrix::GeneratorElement(el, mul);
         auto cost = m_directionOptimizer.getExtensionCost(element);
         //if (cost + colsLeft*m_current.getGF().getW()*m_current.getRows() < m_current.getBitmatrixWeight()) {
@@ -36,11 +39,11 @@ void OptimizeBranchAndBound::recursiveCall(const ExtendedCauchyMatrix::Generator
       }
     }
 
-//    //for (unsigned int el = next.first + 1; el < maxEl; ++el) {
+    //for (unsigned int el = next.first + 1; el < maxEl; ++el) {
 //    for (unsigned int el = 1; el < maxEl; ++el) {
 //      if (m_used[el]) continue;
 //      auto best = WeightedElement(std::numeric_limits<unsigned int>:: max(), {0, 0});
-//      for (unsigned int mul = 1; mul < m_current.getGF().getMax(); ++mul) {
+//      for (unsigned int mul = 1; mul < m_current.getGF()->getMax(); ++mul) {
 //        if (shouldTerminate()) return;
 //        auto element = ExtendedCauchyMatrix::GeneratorElement(el, mul);
 //        auto cost = m_directionOptimizer.getExtensionCost(element);
@@ -53,7 +56,7 @@ void OptimizeBranchAndBound::recursiveCall(const ExtendedCauchyMatrix::Generator
 
     while (!candidates.empty()) {
       auto candidate = candidates.top(); candidates.pop();
-      //auto bound = candidate.first + colsLeft*m_current.getGF().getW()*m_current.getRows();
+      //auto bound = candidate.first + colsLeft*m_current.getGF()->getW()*m_current.getRows();
       //if (bound >= m_current.getBitmatrixWeight()) break;
       if (candidate.first * m_current.getCols()/static_cast<double>(m_current.getCols()-colsLeft) >= m_current.getBitmatrixWeight()) break;
       recursiveCall(candidate.second);
@@ -75,7 +78,7 @@ OptimizeBranchAndBound::OptimizeBranchAndBound(const ExtendedCauchyMatrix &initi
   m_started(std::chrono::high_resolution_clock::now()),
   m_finished(m_started)
 {
-  m_used.resize(m_current.getGF().getMax(), false);
+  m_used.resize(m_current.getGF()->getMax(), false);
   m_current = OptimizeConsecutive(m_current).run();
 }
 

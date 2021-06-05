@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
+#include <memory>
 
 class ExtendedCauchyMatrix
 {
@@ -12,7 +13,7 @@ public:
   using GeneratorVector  = std::vector<GeneratorElement>;
 
 private:
-  const Galois m_GF;
+  const std::shared_ptr<Galois> m_GF;
   const unsigned int m_rows, m_cols;
   mutable unsigned int m_weight = 0;
 
@@ -25,15 +26,15 @@ private:
   void initialize();
 
 public:
-  ExtendedCauchyMatrix(const unsigned int rows, const unsigned int cols, const Galois& GF);
-  ExtendedCauchyMatrix(const GeneratorVector& row, const GeneratorVector& col, const Galois& GF);
-  ExtendedCauchyMatrix(const GeneratorVector& row, unsigned int rows, const Galois& GF);
+  ExtendedCauchyMatrix(const unsigned int rows, const unsigned int cols, const std::shared_ptr<Galois> GF);
+  ExtendedCauchyMatrix(const GeneratorVector& row, const GeneratorVector& col, const std::shared_ptr<Galois> GF);
+  ExtendedCauchyMatrix(const GeneratorVector& row, unsigned int rows, const std::shared_ptr<Galois> GF);
   ExtendedCauchyMatrix(const ExtendedCauchyMatrix& other);
   ExtendedCauchyMatrix(ExtendedCauchyMatrix&& other);
 
   inline unsigned int getRows() const { return m_rows; }
   inline unsigned int getCols() const { return m_cols; }
-  inline const Galois& getGF()  const { return m_GF; }
+  inline const std::shared_ptr<Galois> getGF()  const { return m_GF; }
 
   unsigned int getBitmatrixWeight() const;
 

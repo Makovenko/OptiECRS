@@ -14,15 +14,15 @@
 #include "procedures/optimizemixedinteger.h"
 #include "procedures/optimizemixedintegeralt.h"
 
-Galois getGFFromUser() {
+std::shared_ptr<Galois> getGFFromUser() {
   unsigned int w;
   std::cout << "\tGalois field w: ";
   std::cin >> w;
-  return Galois(w);
+  return std::make_shared<Galois>(w);
 }
 
 ExtendedCauchyMatrix getInitialFromUser() {
-  Galois GF = getGFFromUser();
+  auto GF = getGFFromUser();
   unsigned int rows, cols;
   std::cout << "\tNumber of rows (informational packets): ";
   std::cin >> rows;
@@ -51,7 +51,9 @@ ExtendedCauchyMatrix runAlgorithm() {
     std::cout << "\tIterations limit: ";
     std::cin >> N;
     auto algo = RandomHeuristic(initial, N);
-    return algo.run(timelimit);
+    auto res  = algo.run(timelimit);
+    std::cout << "Time taken by algorithm: " << algo.getTimeInMS() << " seconds."<< std::endl;
+    return res;
   }
   if (algo == "IP") {
     auto algo = OptimizeMixedInteger(initial);

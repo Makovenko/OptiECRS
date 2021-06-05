@@ -18,10 +18,10 @@ ExtendedCauchyMatrix RandomHeuristic::run(const double timelimit)
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_int_distribution<unsigned int> disValue(
-    0, m_initial.getGF().getMax()-1
+    0, m_initial.getGF()->getMax()-1
   );
   std::uniform_int_distribution<unsigned int> disMult(
-    1, m_initial.getGF().getMax()-1
+    1, m_initial.getGF()->getMax()-1
   );
   std::uniform_int_distribution<unsigned int> disPosition(
     0, m_initial.getCols()-1
@@ -35,7 +35,7 @@ ExtendedCauchyMatrix RandomHeuristic::run(const double timelimit)
 
   for (unsigned int i = 0; i < m_N; ++i) {
     if (shouldTerminate()) break;
-    std::vector<bool> used(m_initial.getGF().getMax(), false);
+    std::vector<bool> used(m_initial.getGF()->getMax(), false);
     for (auto& e: current.getGeneratorCol()) used[e.first] = true;
     for (auto& e: current.getGeneratorRow()) used[e.first] = true;
     unsigned int pos = disPosition(gen);

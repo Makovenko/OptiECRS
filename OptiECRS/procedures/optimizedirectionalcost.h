@@ -3,12 +3,13 @@
 #include "optimizedirection.h"
 #include "../matrix/extendedcauchymatrix.h"
 #include <vector>
+#include <memory>
 
 class OptimizeDirectionalCost
 {
   std::vector<std::vector<unsigned int>> m_cache;
   std::vector<bool> m_used;
-  const Galois m_GF;
+  std::shared_ptr<Galois> m_GF;
   const OptimizeDirection::Direction m_direction;
   const unsigned int m_valuesNeeded;
 
